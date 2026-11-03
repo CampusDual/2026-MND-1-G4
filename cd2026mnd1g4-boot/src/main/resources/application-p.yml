@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    # Perfil p: HSQLDB en servidor TCP + persistencia en fichero local.
+    # Arranca primero la BD con el perfil Maven run_database y despues la app con el perfil Maven run_app_p.
+    url: jdbc:hsqldb:hsql://localhost:9001/appdb;sql.syntax_pgs=true
+    username: sa
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver

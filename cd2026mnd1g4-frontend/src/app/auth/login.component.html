@@ -1,0 +1,34 @@
+<section class="login-page">
+  <article class="login-card">
+    <h1>Acceso</h1>
+    <p>Inicia sesion con un usuario existente del backend.</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <label for="username">Username</label>
+      <input id="username" type="text" formControlName="username" autocomplete="username" />
+
+      @if (loginForm.controls.username.touched && loginForm.controls.username.invalid) {
+        <small class="field-error">El username es obligatorio.</small>
+      }
+
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+
+      @if (loginForm.controls.password.touched && loginForm.controls.password.hasError('required')) {
+        <small class="field-error">La password es obligatoria.</small>
+      }
+
+      @if (loginForm.controls.password.touched && loginForm.controls.password.hasError('minlength')) {
+        <small class="field-error">La password debe tener al menos 8 caracteres.</small>
+      }
+
+      @if (errorMessage) {
+        <p class="error-message">{{ errorMessage }}</p>
+      }
+
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Validando...' : 'Entrar' }}
+      </button>
+    </form>
+  </article>
+</section>

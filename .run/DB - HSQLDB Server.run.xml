@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DB - HSQLDB Server" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-25" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="org.hsqldb.Server" />
+    <module name="cd2026mnd1g4-boot" />
+    <option name="PROGRAM_PARAMETERS" value="--address localhost --port 9001 --database.0 file:./.local/hsqldb/appdb --dbname.0 appdb --silent true" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

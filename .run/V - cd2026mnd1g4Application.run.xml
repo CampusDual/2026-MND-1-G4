@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="V - cd2026mnd1g4Application" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-25" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="spring.profiles.active" value="v" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.campusdual.cd2026mnd1g4.MainApplication" />
+    <module name="cd2026mnd1g4-boot" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
