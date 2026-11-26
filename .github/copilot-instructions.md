@@ -189,3 +189,44 @@ src/app/
 │   └── register/
 └── main/       ← Zona privada (requiere autenticación)
 ```
+
+## Contexto del producto: SmartCafé
+
+Plataforma de fidelización para distribuidoras de café con cafeterías propias.
+
+### Reglas de negocio
+- El cliente de la plataforma es la distribuidora (multi-tenant). Los datos de
+  distintas distribuidoras NUNCA se mezclan: toda entidad de negocio lleva
+  distributor_id y toda consulta filtra por él.
+- Los puntos son compartidos entre todos los locales de una distribuidora
+  (Pasaporte Cafetero).
+- Hay UN solo backend y UNA sola BD. El frontend Angular tiene dos vistas
+  según el rol:
+  1. Camarero: sin contraseña, elige su nombre de la lista de su local.
+  2. Gerente: usuario y contraseña.
+- Un canje de puntos o promoción no puede repetirse (validar en backend).
+- Alta de cliente: nombre, teléfono y consentimiento RGPD obligatorio.
+
+### Identificación y TPV (simulados en el prototipo)
+- Identificación del cliente por llavero NFC (Web NFC, solo Chrome Android)
+  y SIEMPRE con alternativa de búsqueda por teléfono. NFC simulado.
+- El TPV se accede mediante una interfaz TpvGateway con implementación
+  simulada, para poder sustituirla por una real. Si el TPV falla, no se
+  pierde el pedido.
+
+### Funcionalidad Camarero
+1. Elegir su nombre. 2. Identificar o registrar cliente. 3. Ver ficha
+   (puntos, recompensas, promociones). 4. Registrar pedido con promociones y
+   puntos. 5. Enviar pedido al TPV. 6. Imprimir ticket.
+
+### Funcionalidad Gerente
+1. Acceso al panel. 2. Alta/edición/cierre de locales. 3. Gestión de
+   camareros. 4. Carta, regla de puntos y recompensas. 5. Promociones
+   (-15%, -20%, 2x1, producto gratis) por local, fecha y franja.
+6. Estadísticas: ventas, clientes activos, puntos y canjes.
+
+### Fuera de alcance
+IA, predicción de demanda, IoT, logística y pagos con tarjeta.
+
+### Orden de trabajo
+openapi.yaml -> entidades y migraciones -> servicios -> controladores -> frontend.

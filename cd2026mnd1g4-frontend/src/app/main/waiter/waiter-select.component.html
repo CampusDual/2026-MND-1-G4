@@ -1,0 +1,21 @@
+<main class="waiter-page">
+  <section class="waiter-card waiter-select-card">
+    <p class="waiter-eyebrow">SmartCafé · Tablet</p>
+    <h1>¿Quién atiende?</h1>
+    <p class="waiter-intro">Selecciona tu nombre para empezar el turno.</p>
+
+    @if (isLoading) {
+      <p role="status">Cargando camareros…</p>
+    } @else if (errorMessage) {
+      <p class="waiter-message waiter-message-error" role="alert">{{ errorMessage }}</p>
+    } @else {
+      <div class="waiter-choice-grid">
+        @for (waiter of waiters; track waiter.id) {
+          <button class="waiter-choice-button" type="button" (click)="selectWaiter(waiter)">
+            {{ waiter.name }}
+          </button>
+        }
+      </div>
+    }
+  </section>
+</main>

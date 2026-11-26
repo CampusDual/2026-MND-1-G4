@@ -1,0 +1,16 @@
+.waiter-select-card {
+  max-width: 760px;
+  text-align: center;
+}
+
+.waiter-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.waiter-choice-button {
+  min-height: 110px;
+  font-size: 1.5rem;
+}

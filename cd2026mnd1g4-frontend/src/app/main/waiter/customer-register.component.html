@@ -1,0 +1,48 @@
+<main class="waiter-page">
+  <section class="waiter-card waiter-register-card">
+    <p class="waiter-eyebrow">Nuevo cliente</p>
+    <h1>Dar de alta</h1>
+
+    <form class="waiter-form" [formGroup]="customerForm" (ngSubmit)="saveCustomer()" novalidate>
+      <label for="fullName">Nombre completo <span aria-hidden="true">*</span></label>
+      <input id="fullName" type="text" formControlName="fullName" autocomplete="name" />
+      @if (customerForm.controls.fullName.touched && customerForm.controls.fullName.invalid) {
+        <small class="waiter-field-error">El nombre es obligatorio (máximo 120 caracteres).</small>
+      }
+
+      <label for="phone">Teléfono <span aria-hidden="true">*</span></label>
+      <input id="phone" type="tel" formControlName="phone" autocomplete="tel" />
+      @if (customerForm.controls.phone.touched && customerForm.controls.phone.invalid) {
+        <small class="waiter-field-error">Introduce un teléfono válido.</small>
+      }
+
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" autocomplete="email" />
+      @if (customerForm.controls.email.touched && customerForm.controls.email.invalid) {
+        <small class="waiter-field-error">Introduce un email válido.</small>
+      }
+
+      <label for="newKeyTagCode">Código de llavero</label>
+      <input id="newKeyTagCode" type="text" formControlName="keyTagCode" autocomplete="off" />
+
+      <label class="waiter-checkbox-label">
+        <input type="checkbox" formControlName="acceptsDataProtection" />
+        Acepta la protección de datos (RGPD) <span aria-hidden="true">*</span>
+      </label>
+      @if (customerForm.controls.acceptsDataProtection.touched && customerForm.controls.acceptsDataProtection.invalid) {
+        <small class="waiter-field-error">El consentimiento es obligatorio para el alta.</small>
+      }
+
+      @if (errorMessage) {
+        <p class="waiter-message waiter-message-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <div class="waiter-action-row">
+        <button class="waiter-button" type="submit" [disabled]="isSaving">
+          {{ isSaving ? 'Guardando…' : 'Dar de alta' }}
+        </button>
+        <button class="waiter-button waiter-button-secondary" type="button" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </section>
+</main>

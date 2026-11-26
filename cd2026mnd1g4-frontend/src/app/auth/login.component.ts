@@ -45,7 +45,7 @@ export class LoginComponent {
     this.authService.login(username, password).subscribe({
       next: (isAuthenticated: boolean) => {
         if (isAuthenticated) {
-          this.router.navigate(['/it-works']);
+          this.router.navigate(['/main']);
           return;
         }
 

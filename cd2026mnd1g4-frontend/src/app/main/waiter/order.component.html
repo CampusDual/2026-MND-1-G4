@@ -1,0 +1,176 @@
+<main class="waiter-page waiter-page-wide">
+  <section class="waiter-card">
+    <header class="waiter-order-header">
+      <div>
+        <p class="waiter-eyebrow">Pedido</p>
+        <h1>{{ customer ? customer.fullName : 'Pedido sin identificar' }}</h1>
+        <p>
+          Atiende: <strong>{{ waiter?.name }}</strong>
+          @if (customer) {
+            <span> · {{ customer.points }} puntos</span>
+          }
+        </p>
+        @if (customer && customer.favoriteProductNames.length > 0) {
+          <p class="waiter-subtle">Suele pedir: {{ customer.favoriteProductNames.join(', ') }}</p>
+        }
+      </div>
+      @if (!receipt) {
+        <button class="waiter-button waiter-button-secondary" type="button" (click)="nextCustomer()">
+          Cambiar cliente
+        </button>
+      }
+    </header>
+
+    @if (isLoading) {
+      <p role="status">Cargando carta…</p>
+    } @else {
+      @if (customer) {
+        <section class="waiter-order-section">
+          <h2>Puede canjear</h2>
+          <div class="waiter-card-list">
+            @for (reward of rewards; track reward.id) {
+              <button
+                class="waiter-offer-card"
+                [class.waiter-offer-selected]="selectedRewardId === reward.id"
+                [attr.aria-pressed]="selectedRewardId === reward.id"
+                [disabled]="receipt || customer.points < reward.pointsCost"
+                type="button"
+                (click)="selectReward(reward)"
+              >
+                {{ reward.name }} · {{ reward.pointsCost }} pts
+                @if (customer.points < reward.pointsCost) {
+                  <small>(puntos insuficientes)</small>
+                }
+              </button>
+            }
+          </div>
+        </section>
+      }
+
+      <section class="waiter-order-section">
+        <h2>Promociones ahora <span class="waiter-caption">(máximo una por pedido)</span></h2>
+        <div class="waiter-card-list">
+          @for (promotion of promotions; track promotion.id) {
+            <button
+              class="waiter-offer-card"
+              [class.waiter-offer-selected]="selectedPromotionId === promotion.id"
+              [attr.aria-pressed]="selectedPromotionId === promotion.id"
+              [disabled]="!!receipt"
+              type="button"
+              (click)="togglePromotion(promotion)"
+            >
+              <strong>{{ promotion.name }}</strong>
+              <small>{{ promotion.description }}</small>
+            </button>
+          }
+        </div>
+      </section>
+
+      <section class="waiter-order-section">
+        <h2>Carta</h2>
+        <nav class="waiter-category-tabs" aria-label="Categorías de la carta">
+          @for (category of categories; track category.id) {
+            <button
+              class="waiter-category-button"
+              [class.waiter-category-selected]="selectedCategory === category.id"
+              [attr.aria-pressed]="selectedCategory === category.id"
+              type="button"
+              (click)="selectedCategory = category.id"
+            >
+              {{ category.name }}
+            </button>
+          }
+        </nav>
+
+        <div class="waiter-product-list">
+          @for (product of productsInCategory(selectedCategory); track product.id) {
+            <article class="waiter-product-row">
+              <div>
+                <h3>{{ product.name }}</h3>
+                <p>{{ formatPrice(product.unitPriceCents) }}</p>
+              </div>
+              <div class="waiter-quantity-control" [attr.aria-label]="'Cantidad de ' + product.name">
+                <button type="button" [disabled]="!!receipt || quantityFor(product.id) === 0" (click)="changeQuantity(product, -1)">−</button>
+                <span aria-live="polite">{{ quantityFor(product.id) }}</span>
+                <button type="button" [disabled]="!!receipt" (click)="changeQuantity(product, 1)">+</button>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="waiter-order-summary" aria-live="polite">
+        <h2>Resumen</h2>
+        <dl>
+          @for (line of quote.lines; track line.productId) {
+            <div class="waiter-invoice-line">
+              <dt>{{ line.quantity }} x {{ line.productName }}</dt>
+              <dd>{{ formatPrice(line.subtotalCents) }}</dd>
+            </div>
+            @for (discount of line.discounts; track discount.name) {
+              <div class="waiter-invoice-discount">
+                <dt>
+                  {{ discount.name }}
+                  @if (discount.pointsCost !== null) {
+                    <span>(−{{ discount.pointsCost }} pts)</span>
+                  }
+                </dt>
+                <dd>{{ formatNegativePrice(discount.amountCents) }}</dd>
+              </div>
+            }
+          }
+          @if (quote.orderDiscountCents > 0) {
+            <div class="waiter-invoice-discount">
+              <dt>{{ quote.orderDiscountName }}</dt>
+              <dd>{{ formatNegativePrice(quote.orderDiscountCents) }}</dd>
+            </div>
+          }
+          <div><dt>Subtotal</dt><dd>{{ formatPrice(quote.subtotalCents) }}</dd></div>
+          <div><dt>Total descuentos</dt><dd>{{ formatNegativePrice(quote.totalDiscountCents) }}</dd></div>
+          <div class="waiter-total-row"><dt>TOTAL</dt><dd>{{ formatPrice(quote.totalCents) }}</dd></div>
+          <div><dt>Puntos que gana</dt><dd>{{ quote.pointsEarned }} pts</dd></div>
+          @if (customer) {
+            <div><dt>Se queda con</dt><dd>{{ quote.customerPointsAfterOrder }} pts</dd></div>
+          }
+        </dl>
+      </section>
+
+      @if (errorMessage) {
+        <p class="waiter-message waiter-message-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      @if (receipt) {
+        @if (receipt.status === 'posUnavailable') {
+          <p class="waiter-message waiter-message-error" role="alert">
+            Pedido guardado, pero el TPV no respondió
+          </p>
+          <button class="waiter-button waiter-button-secondary" type="button" [disabled]="isRetrying" (click)="retryPos()">
+            {{ isRetrying ? 'Reintentando…' : 'Reintentar' }}
+          </button>
+        } @else {
+          <p class="waiter-message waiter-message-success" role="status">
+            Pedido enviado. Se han añadido {{ receipt.pointsEarned }} puntos.
+          </p>
+        }
+        @if (retryMessage) {
+          <p class="waiter-message" role="status">{{ retryMessage }}</p>
+        }
+        @if (retryErrorMessage) {
+          <p class="waiter-message waiter-message-error" role="alert">{{ retryErrorMessage }}</p>
+        }
+        <div class="waiter-action-row">
+          <button class="waiter-button" type="button" (click)="printTicket()">Imprimir ticket</button>
+          <button class="waiter-button waiter-button-secondary" type="button" (click)="nextCustomer()">Siguiente cliente</button>
+          <button class="waiter-button waiter-button-secondary" type="button" (click)="finishTurn()">Terminar</button>
+        </div>
+        @if (printMessage) {
+          <p class="waiter-message" role="status">{{ printMessage }}</p>
+        }
+      } @else {
+        <button class="waiter-button waiter-submit-button" type="button" [disabled]="isSending || orderItems.length === 0" (click)="sendToPos()">
+          {{ isSending ? 'Enviando…' : 'Enviar pedido al TPV' }}
+        </button>
+      }
+    }
+  </section>
+</main>

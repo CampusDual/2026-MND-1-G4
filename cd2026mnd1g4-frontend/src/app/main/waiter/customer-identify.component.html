@@ -1,0 +1,45 @@
+<main class="waiter-page">
+  <section class="waiter-card">
+    <button class="waiter-button waiter-register-primary" type="button" (click)="registerCustomer()">
+      Inscribir cliente nuevo
+    </button>
+
+    <header class="waiter-screen-header">
+      <p class="waiter-eyebrow">Identificación del cliente</p>
+      <h1>Busca al cliente</h1>
+      <p>Atiende: <strong>{{ waiter?.name }}</strong></p>
+      <button class="waiter-button waiter-button-secondary" type="button" (click)="changeWaiter()">
+        Cambiar camarero
+      </button>
+    </header>
+
+    <div class="waiter-form-section">
+      <h2>Llavero</h2>
+      <p>Introduce el código NFC para simular su lectura.</p>
+      <form class="waiter-inline-form" (ngSubmit)="searchByKeyTag()">
+        <label class="waiter-visually-hidden" for="keyTagCode">Código del llavero</label>
+        <input id="keyTagCode" name="keyTagCode" [(ngModel)]="keyTagCode" placeholder="NFC-0001" autocomplete="off" />
+        <button class="waiter-button" type="submit" [disabled]="isSearching">Buscar</button>
+      </form>
+    </div>
+
+    <div class="waiter-form-section">
+      <h2>¿Olvidó el llavero?</h2>
+      <form class="waiter-inline-form" (ngSubmit)="searchByPhone()">
+        <label class="waiter-visually-hidden" for="customerPhone">Teléfono del cliente</label>
+        <input id="customerPhone" name="customerPhone" type="tel" [(ngModel)]="phone" placeholder="Teléfono" autocomplete="tel" />
+        <button class="waiter-button" type="submit" [disabled]="isSearching">Buscar</button>
+      </form>
+    </div>
+
+    @if (errorMessage) {
+      <p class="waiter-message waiter-message-error" role="alert">{{ errorMessage }}</p>
+    }
+
+    <div class="waiter-action-row">
+      <button class="waiter-button waiter-button-secondary" type="button" (click)="continueWithoutCustomer()">
+        Pedido sin identificar
+      </button>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,48 @@
+.waiter-screen-header {
+  margin-bottom: 1.5rem;
+}
+
+.waiter-register-primary {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.waiter-screen-header h1 {
+  margin-bottom: 0.5rem;
+}
+
+.waiter-form-section {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--waiter-border);
+}
+
+.waiter-form-section h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+}
+
+.waiter-form-section p {
+  margin: 0 0 0.8rem;
+}
+
+.waiter-inline-form {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.waiter-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 560px) {
+  .waiter-inline-form {
+    flex-direction: column;
+  }
+}
