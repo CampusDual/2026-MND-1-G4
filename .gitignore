@@ -319,3 +319,6 @@ dist
 # Ignore all local history of files
 .history
 .ionide
+
+.local/hsqldb/appdb.lck
+.local/hsqldb/appdb.properties
